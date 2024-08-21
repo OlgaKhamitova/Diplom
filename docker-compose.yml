@@ -1,0 +1,45 @@
+version: '3.1'
+services:
+  mysql:
+    image: mysql:8.0.34
+    restart: always
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: yes
+      MYSQL_PASSWORD: pass
+      MYSQL_USER: app
+      MYSQL_DATABASE: app
+    ports:
+      - "3307:3306"
+#    entrypoint: ["mysql", "--user=app" , "--password=pass", "--execute=USE app; DELETE FROM users"]
+
+  db:
+    image: postgres:12.1-alpine
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    # or set shared memory limit when deploy via swarm stack
+    #volumes:
+    #  - type: tmpfs
+    #    target: /dev/shm
+    #    tmpfs:
+    #      size: 134217728 # 128*2^20 bytes = 128Mb
+    environment:
+      POSTGRES_PASSWORD: 12345698
+      POSTGRES_USER: app
+      POSTGRES_DB: app
+    ports:
+      - "5430:5432"
+
+  emulator:
+    image: "node:8"
+    user: "node"
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./emulator:/home/node/app
+    expose:
+      - "9999"
+    ports: # use if it is necessary to expose the container to the host machine
+      - "9999:9999"
+    command: "npm start"
