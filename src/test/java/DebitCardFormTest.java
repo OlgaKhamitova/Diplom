@@ -26,7 +26,7 @@ public class DebitCardFormTest {
         closeWebDriver();
     }
     @Test
-    @DisplayName("Payment by debit card using cyrillic alphabet and numbers")
+    @DisplayName("Payment by debit card using cyrillic alphabet and numbers") // order entity+payment entity
 
     public void testRequestForm() {
         boolean isActive = true;
@@ -48,7 +48,7 @@ public class DebitCardFormTest {
     }
 
     @Test
-    @DisplayName("Payment by debit card using numbers")  // БАГ!!!!!
+    @DisplayName("Payment by debit card using numbers")  // БАГ!!!!! // order entity+payment entity
     public void testRequestFormNum() {
         boolean isActive = true;
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);

@@ -40,7 +40,7 @@ public class CreditCardFormTest {
     }
 
     @Test
-    @DisplayName("Payment by debit card using latin alphabet and numbers")
+    @DisplayName("Payment by debit card using latin alphabet and numbers") // credit_request_entity+order_entity
     public void testRequestFormEn() {
         boolean isActive = true;
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
