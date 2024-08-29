@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import utils.PageElementUtils;
 import utils.RegistrationDataGenerator;
 import model.RegistrationInfo;
+import utils.SqlHelper;
 
 import java.time.Duration;
 
@@ -127,6 +128,41 @@ public class CreditCardFormTest {
 
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.expiredField.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
+    }
+    @Test
+    @DisplayName("Successfully order in order_entity")
+    public void testRequestFormOrderEntity() {
+        boolean isActive = true;
+        String locale = "ru";
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, locale);
+        PageElementUtils.fillPageElements(registrationInfo);
+        PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
+        SqlHelper.getPaymentId();
+        SqlHelper.cleanDataBase();
+    }
+
+    @Test
+    @DisplayName("Unsuccessful order_entity")
+    public void testUsingExpiredPeriodCard() {
+        boolean isActive = true;
+        boolean isExpired = true;
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, isExpired);
+        PageElementUtils.fillPageElements(registrationInfo);
+        PageElements.expiredField.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
+        SqlHelper.getPaymentId();
+        SqlHelper.cleanDataBase();
+    }
+
+    @Test
+    @DisplayName("Payment method definition")
+    public void testPaymentMethodDefinition() {
+        boolean isActive = true;
+        String paymentId = SqlHelper.getPaymentId();
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
+        PageElementUtils.fillPageElements(registrationInfo);
+        PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
+        SqlHelper.getPaymentMethod(paymentId);
+        SqlHelper.cleanDataBase();
     }
 }
 
