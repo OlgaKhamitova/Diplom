@@ -23,11 +23,12 @@ dependencies {
     testImplementation 'com.codeborne:selenide:6.17.2'
     testCompileOnly 'org.projectlombok:lombok:1.18.22'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+    testImplementation 'io.qameta.allure:allure-selenide:2.16.1'
 }
 
 test {
     useJUnitPlatform()
     systemProperty 'selenide.headless', System.getProperty('selenide.headless')
-    systemProperty 'db.url', System.getProperty('db.url', "jdbc:mysql://localhost:3306/app")
+    systemProperty 'db.url', System.getProperty('db.url', "jdbc:mysql://localhost:3307/app")
     systemProperty 'chromeoptions.prefs', System.getProperty('chromeoptions.prefs', "profile.password_manager_leak_detection=false")
 }

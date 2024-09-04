@@ -1,8 +1,5 @@
 import model.PageElements;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import utils.PageElementUtils;
 import utils.RegistrationDataGenerator;
 import model.RegistrationInfo;
@@ -17,6 +14,10 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class CreditCardFormTest {
     private static final int notificationTimeout = 15;
+    private static final boolean isCredit = true;
+    private static final String approvedStatus = "APPROVED";
+    private static final String declinedStatus = "DECLINED";
+    private static final String rusLocale = "ru";
 
     @BeforeEach
     void SetUp() {
@@ -29,74 +30,72 @@ public class CreditCardFormTest {
         closeWebDriver();
     }
     @Test
-    @DisplayName("Payment by debit card using cyrillic alphabet and numbers")
+    @DisplayName("Payment by credit card using cyrillic alphabet and numbers")
 
     public void testRequestForm() {
         boolean isActive = true;
-        String locale = "ru";
-        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, locale);
 
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, rusLocale);
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
     }
 
     @Test
-    @DisplayName("Payment by debit card using latin alphabet and numbers") // credit_request_entity+order_entity
+    @DisplayName("Payment by credit card using latin alphabet and numbers") // credit_request_entity+order_entity
     public void testRequestFormEn() {
         boolean isActive = true;
-        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
 
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
     }
 
     @Test
-    @DisplayName("Payment by debit card using numbers")  // БАГ!!!!!
+    @DisplayName("Payment by credit card using numbers")  // БАГ!!!!!
     public void testRequestFormNum() {
         boolean isActive = true;
-        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
 
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
         registrationInfo.setOwner("1234567890");
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.bankOperationReject.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
     }
 
     @Test
-    @DisplayName("Payment by debit card using cyrillic alphabet in card number")
+    @DisplayName("Payment by credit card using cyrillic alphabet in card number")
     public void testRequestFormCyr() {
         boolean isActive = true;
-        String locale = "ru";
-        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, locale);
 
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, rusLocale);
         registrationInfo.setCardNumber("Один два три");
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.cardNumberErrorField.shouldHave(text(PageElements.wrongFormatError));
     }
 
     @Test
-    @DisplayName("Payment by debit card using latin alphabet in card number")
+    @DisplayName("Payment by credit card using latin alphabet in card number")
     public void testRequestFormEnCardNumber() {
         boolean isActive = true;
-        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
 
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
         registrationInfo.setCardNumber("One two three");
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.cardNumberErrorField.shouldHave(text(PageElements.wrongFormatError));
     }
 
     @Test
-    @DisplayName("Payment by debit card using special characters") //БАГ!!!!!!!!!!!
+    @DisplayName("Payment by credit card using special characters") //БАГ!!!!!!!!!!!
     public void testRequestFormSpecialCharacters() {
         boolean isActive = true;
-        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
 
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
         PageElementUtils.fillPageElements(registrationInfo);
         registrationInfo.setOwner("...,,,,,№№№№");
         PageElements.bankOperationReject.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
     }
 
     @Test
-    @DisplayName("Payment by debit card send empty form")
+    @DisplayName("Payment by credit card send empty form")
     public void testSendEmptyForm() {
         PageElements.proceedButton.click();
         PageElements.cardNumberErrorField.shouldHave(text(PageElements.wrongFormatError));
@@ -109,23 +108,22 @@ public class CreditCardFormTest {
     }
 
     @Test
-    @DisplayName("Payment by debit card with declined card") // БАГ!!!!!!!!!!
+    @DisplayName("Payment by credit card with declined card") // БАГ!!!!!!!!!!
     public void testDeclinedCard() {
         boolean isActive = false;
-        String locale = "ru";
-        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, locale);
 
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, rusLocale);
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.bankOperationReject.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
     }
 
     @Test
-    @DisplayName("Payment by debit card with expired card")
+    @DisplayName("Payment by credit card with expired card")
     public void testExpiredCard() {
         boolean isActive = true;
         boolean isExpired = true;
-        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, isExpired);
 
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, isExpired);
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.expiredField.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
     }
@@ -133,12 +131,14 @@ public class CreditCardFormTest {
     @DisplayName("Successfully order in order_entity")
     public void testRequestFormOrderEntity() {
         boolean isActive = true;
-        String locale = "ru";
-        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, locale);
+
+        SqlHelper.cleanDataBase();
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, rusLocale);
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
-        SqlHelper.getPaymentId();
-        SqlHelper.cleanDataBase();
+        String actual = SqlHelper.getPaymentId();
+
+        Assertions.assertNotEquals(null, actual);
     }
 
     @Test
@@ -146,23 +146,61 @@ public class CreditCardFormTest {
     public void testUsingExpiredPeriodCard() {
         boolean isActive = true;
         boolean isExpired = true;
+
+        SqlHelper.cleanDataBase();
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, isExpired);
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.expiredField.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
-        SqlHelper.getPaymentId();
-        SqlHelper.cleanDataBase();
+        String actual = SqlHelper.getPaymentId();
+
+        Assertions.assertNull(actual);
+
     }
 
     @Test
     @DisplayName("Payment method definition")
     public void testPaymentMethodDefinition() {
         boolean isActive = true;
-        String paymentId = SqlHelper.getPaymentId();
+
+        SqlHelper.cleanDataBase();
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
-        SqlHelper.getPaymentMethod(paymentId);
+        String paymentId = SqlHelper.getPaymentId();
+        String actual = SqlHelper.getPaymentMethod(paymentId);
+        String expected = "Credit card";
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("Approved status definition")
+    public void testApprovedStatusDefinition(){
+        boolean isActive = true;
+
         SqlHelper.cleanDataBase();
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
+        PageElementUtils.fillPageElements(registrationInfo);
+        PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
+        String paymentId = SqlHelper.getPaymentId();
+        String actual = SqlHelper.getPaymentStatus(isCredit,paymentId);
+
+        Assertions.assertEquals(approvedStatus, actual);
+    }
+    @Test
+    @DisplayName("Declined status definition")
+    public void testDeclinedStatusDefinition(){
+        boolean isActive = false;
+
+        SqlHelper.cleanDataBase();
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
+        PageElementUtils.fillPageElements(registrationInfo);
+        registrationInfo.setCardNumber(registrationInfo.getCardNumber());
+        PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
+        String paymentId = SqlHelper.getPaymentId();
+        String actual = SqlHelper.getPaymentStatus(isCredit,paymentId);
+
+        Assertions.assertEquals(declinedStatus, actual);
     }
 }
 
