@@ -101,7 +101,6 @@ public class DebitCardFormTest {
         PageElements.cardOwnerErrorField.shouldHave(text(PageElements.wrongFormatError));
         PageElements.cvv2ErrorField.shouldHave(text(PageElements.wrongFormatError));
         PageElements.necessaryField.shouldBe(visible);
-
     }
 
     @Test
@@ -161,27 +160,28 @@ public class DebitCardFormTest {
         PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
         String paymentId = SqlHelper.getPaymentId();
         String actual = SqlHelper.getPaymentMethod(paymentId);
-        String expected = TestConstants.CREDIT_CARD_PAYMENT_METHOD;
+        String expected = TestConstants.DEBIT_CARD_PAYMENT_METHOD;
 
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
     @DisplayName("Approved status definition")
-    public void testApprovedStatusDefinition(){
+    public void testApprovedStatusDefinition() {
         boolean isActive = true;
         SqlHelper.cleanDataBase();
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
         String paymentId = SqlHelper.getPaymentId();
-        String actual = SqlHelper.getPaymentStatus(isCredit,paymentId);
+        String actual = SqlHelper.getPaymentStatus(isCredit, paymentId);
 
         Assertions.assertEquals(TestConstants.APPROVED_STATUS, actual);
     }
+
     @Test
     @DisplayName("Declined status definition")
-    public void testDeclinedStatusDefinition(){
+    public void testDeclinedStatusDefinition() {
         boolean isActive = false;
         SqlHelper.cleanDataBase();
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
@@ -189,7 +189,7 @@ public class DebitCardFormTest {
         registrationInfo.setCardNumber(registrationInfo.getCardNumber());
         PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
         String paymentId = SqlHelper.getPaymentId();
-        String actual = SqlHelper.getPaymentStatus(isCredit,paymentId);
+        String actual = SqlHelper.getPaymentStatus(isCredit, paymentId);
 
         Assertions.assertEquals(TestConstants.DECLINED_STATUS, actual);
     }
