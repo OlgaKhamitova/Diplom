@@ -1,5 +1,6 @@
 package utils;
 
+import constants.TestConstants;
 import lombok.SneakyThrows;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
@@ -35,12 +36,12 @@ public class SqlHelper {
         String debitMethodQueryResult = QUERY_RUNNER.query(connect, debitMethodQuery, new ScalarHandler<>());
         String creditMethodQueryResult = QUERY_RUNNER.query(connect, creditMethodQuery, new ScalarHandler<>());
         if (debitMethodQueryResult != null) {
-            return "Debit card";
+            return TestConstants.DEBIT_CARD_PAYMENT_METHOD;
         }
         if (creditMethodQueryResult != null) {
-            return "Credit card";
+            return TestConstants.CREDIT_CARD_PAYMENT_METHOD;
         }
-        return "NONE";
+        return TestConstants.NONE_PAYMENT_METHOD;
     }
 
 

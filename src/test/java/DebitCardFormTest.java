@@ -1,3 +1,4 @@
+import constants.TestConstants;
 import model.PageElements;
 import org.junit.jupiter.api.*;
 import utils.PageElementUtils;
@@ -16,13 +17,10 @@ import static com.codeborne.selenide.Selenide.*;
 public class DebitCardFormTest {
     private static final int notificationTimeout = 15;
     private static final boolean isCredit = false;
-    private static final String approvedStatus = "APPROVED";
-    private static final String declinedStatus = "DECLINED";
-    private static final String rusLocale = "ru";
 
     @BeforeEach
     void SetUp() {
-        open("http://localhost:8080");
+        open(TestConstants.APPLICATION_HOST);
         $(withText("Купить")).click();
     }
 
@@ -36,7 +34,7 @@ public class DebitCardFormTest {
 
     public void testRequestForm() {
         boolean isActive = true;
-        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, rusLocale);
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, TestConstants.RUS_LOCALE);
 
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
@@ -67,7 +65,7 @@ public class DebitCardFormTest {
     @DisplayName("Payment by debit card using cyrillic alphabet in card number")
     public void testRequestFormCyr() {
         boolean isActive = true;
-        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, rusLocale);
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, TestConstants.RUS_LOCALE);
         registrationInfo.setCardNumber("Один два три");
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.cardNumberErrorField.shouldHave(text(PageElements.wrongFormatError));
@@ -110,7 +108,7 @@ public class DebitCardFormTest {
     @DisplayName("Payment by debit card with declined card") // БАГ!!!!!!!!!!
     public void testDeclinedCard() {
         boolean isActive = false;
-        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, rusLocale);
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, TestConstants.RUS_LOCALE);
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.bankOperationReject.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
     }
@@ -130,7 +128,7 @@ public class DebitCardFormTest {
     public void testRequestFormOrderEntity() {
         boolean isActive = true;
         SqlHelper.cleanDataBase();
-        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, rusLocale);
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, TestConstants.RUS_LOCALE);
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
         String actual = SqlHelper.getPaymentId();
@@ -163,7 +161,7 @@ public class DebitCardFormTest {
         PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
         String paymentId = SqlHelper.getPaymentId();
         String actual = SqlHelper.getPaymentMethod(paymentId);
-        String expected = "Debit card";
+        String expected = TestConstants.CREDIT_CARD_PAYMENT_METHOD;
 
         Assertions.assertEquals(expected, actual);
     }
@@ -179,7 +177,7 @@ public class DebitCardFormTest {
         String paymentId = SqlHelper.getPaymentId();
         String actual = SqlHelper.getPaymentStatus(isCredit,paymentId);
 
-        Assertions.assertEquals(approvedStatus, actual);
+        Assertions.assertEquals(TestConstants.APPROVED_STATUS, actual);
     }
     @Test
     @DisplayName("Declined status definition")
@@ -193,7 +191,7 @@ public class DebitCardFormTest {
         String paymentId = SqlHelper.getPaymentId();
         String actual = SqlHelper.getPaymentStatus(isCredit,paymentId);
 
-        Assertions.assertEquals(declinedStatus, actual);
+        Assertions.assertEquals(TestConstants.DECLINED_STATUS, actual);
     }
 
 }
