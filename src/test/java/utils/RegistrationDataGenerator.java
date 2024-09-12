@@ -15,6 +15,7 @@ public class RegistrationDataGenerator {
     private static final String activeCard = "4444444444444441";
     private static final String deflectedCard = "4444444444444442";
     private static final String defaultLocale = "en";
+    private static final String wrongCode = "000";
 
     public static RegistrationInfo getRegistrationInfo(boolean isActive) {
         return getRegistrationInfo(isActive, defaultLocale);
@@ -29,11 +30,21 @@ public class RegistrationDataGenerator {
         String code = generateCode();
         return new RegistrationInfo(cardNumber, month, year, owner, code);
     }
+
     public static RegistrationInfo getRegistrationInfo(boolean isActive, boolean isExpired) {
         String month = generateRegistrationMonth();
         String year = generateRegistrationYear(isExpired);
         String cardNumber = generateCardNumber(isActive);
         String owner = generateOwner(defaultLocale);
+        String code = generateCode();
+        return new RegistrationInfo(cardNumber, month, year, owner, code);
+    }
+
+    public static RegistrationInfo getRegistrationInfo(boolean isActive, String locale, boolean isExpired) {
+        String month = generateRegistrationMonth();
+        String year = generateRegistrationYear(isExpired);
+        String cardNumber = generateCardNumber(isActive);
+        String owner = generateWrongOwner(locale);
         String code = generateCode();
         return new RegistrationInfo(cardNumber, month, year, owner, code);
     }
@@ -71,5 +82,10 @@ public class RegistrationDataGenerator {
         for (int i = 0; i < 3; i++)
             sb.append(chars[rnd.nextInt(chars.length)]);
         return sb.toString();
+    }
+
+    private static String generateWrongOwner(String locale) {
+        Faker faker = new Faker(new Locale(locale));
+        return faker.letterify("?");
     }
 }

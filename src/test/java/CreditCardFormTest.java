@@ -126,6 +126,30 @@ public class CreditCardFormTest {
         PageElements.expiredField.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
     }
     @Test
+    @DisplayName("Using 000 in CVC") // БАГ!!!!!!!!!!!
+    public void testUse000inCVC(){
+        boolean isActive = true;
+
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
+        registrationInfo.setCode("000");
+        PageElementUtils.fillPageElements(registrationInfo);
+        PageElements.bankOperationReject.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
+    }
+
+    @Test
+    @DisplayName("Using one letter in owner") // БАГ!!!!!!!!!!
+    public void testUseOneLetterInOwner(){
+        boolean isActive = true;
+        String locale = "ru";
+        boolean isExpired = false;
+
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive,locale, isExpired);
+        PageElementUtils.fillPageElements(registrationInfo);
+        PageElements.bankOperationReject.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
+    }
+
+
+    @Test
     @DisplayName("Successfully order in order_entity")
     public void testRequestFormOrderEntity() {
         boolean isActive = true;
