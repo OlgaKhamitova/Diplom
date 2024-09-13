@@ -12,6 +12,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.*;
+import static model.PageElements.cardOwnerInput;
 
 public class CreditCardFormTest {
     private static final int notificationTimeout = 15;
@@ -140,14 +141,15 @@ public class CreditCardFormTest {
     @DisplayName("Using one letter in owner") // БАГ!!!!!!!!!!
     public void testUseOneLetterInOwner(){
         boolean isActive = true;
-        String locale = "ru";
-        boolean isExpired = false;
 
-        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive,locale, isExpired);
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive,TestConstants.RUS_LOCALE);
+        String newOwner = registrationInfo.getOwner();
+        char wrongOwner = newOwner.charAt(0);
+        String notAllowedOwner = "" + wrongOwner;
+        registrationInfo.setOwner(notAllowedOwner);
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.bankOperationReject.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
     }
-
 
     @Test
     @DisplayName("Successfully order in order_entity")

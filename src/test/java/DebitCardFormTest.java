@@ -121,6 +121,31 @@ public class DebitCardFormTest {
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.expiredField.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
     }
+    @Test
+    @DisplayName("Using 000 in CVC") // БАГ!!!!!!!!!!!
+    public void testUse000inCVC(){
+        boolean isActive = true;
+
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
+        registrationInfo.setCode("000");
+        PageElementUtils.fillPageElements(registrationInfo);
+        PageElements.bankOperationReject.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
+    }
+
+    @Test
+    @DisplayName("Using one letter in owner") // БАГ!!!!!!!!!!
+    public void testUseOneLetterInOwner(){
+        boolean isActive = true;
+
+        RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive,TestConstants.RUS_LOCALE);
+        String newOwner = registrationInfo.getOwner();
+        char wrongOwner = newOwner.charAt(0);
+        String notAllowedOwner = "" + wrongOwner;
+        registrationInfo.setOwner(notAllowedOwner);
+        PageElementUtils.fillPageElements(registrationInfo);
+        PageElements.bankOperationReject.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
+    }
+
 
     @Test
     @DisplayName("Successfully order in order_entity")
