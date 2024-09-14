@@ -35,7 +35,6 @@ public class DebitCardFormTest {
     public void testRequestForm() {
         boolean isActive = true;
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, TestConstants.RUS_LOCALE);
-
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
     }
@@ -45,7 +44,6 @@ public class DebitCardFormTest {
     public void testRequestFormEn() {
         boolean isActive = true;
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
-
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
     }
@@ -55,7 +53,6 @@ public class DebitCardFormTest {
     public void testRequestFormNum() {
         boolean isActive = true;
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
-
         registrationInfo.setOwner("1234567890");
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.bankOperationReject.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
@@ -125,7 +122,6 @@ public class DebitCardFormTest {
     @DisplayName("Using 000 in CVC") // БАГ!!!!!!!!!!!
     public void testUse000inCVC(){
         boolean isActive = true;
-
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
         registrationInfo.setCode("000");
         PageElementUtils.fillPageElements(registrationInfo);
@@ -136,7 +132,6 @@ public class DebitCardFormTest {
     @DisplayName("Using one letter in owner") // БАГ!!!!!!!!!!
     public void testUseOneLetterInOwner(){
         boolean isActive = true;
-
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive,TestConstants.RUS_LOCALE);
         String newOwner = registrationInfo.getOwner();
         char wrongOwner = newOwner.charAt(0);

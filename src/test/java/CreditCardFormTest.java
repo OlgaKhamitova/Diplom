@@ -12,7 +12,6 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.*;
-import static model.PageElements.cardOwnerInput;
 
 public class CreditCardFormTest {
     private static final int notificationTimeout = 15;
@@ -33,7 +32,6 @@ public class CreditCardFormTest {
 
     public void testRequestForm() {
         boolean isActive = true;
-
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, TestConstants.RUS_LOCALE);
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
@@ -43,7 +41,6 @@ public class CreditCardFormTest {
     @DisplayName("Payment by credit card using latin alphabet and numbers") // credit_request_entity+order_entity
     public void testRequestFormEn() {
         boolean isActive = true;
-
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.bankOperationApproval.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
@@ -53,7 +50,6 @@ public class CreditCardFormTest {
     @DisplayName("Payment by credit card using numbers")  // БАГ!!!!!
     public void testRequestFormNum() {
         boolean isActive = true;
-
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
         registrationInfo.setOwner("1234567890");
         PageElementUtils.fillPageElements(registrationInfo);
@@ -64,7 +60,6 @@ public class CreditCardFormTest {
     @DisplayName("Payment by credit card using cyrillic alphabet in card number")
     public void testRequestFormCyr() {
         boolean isActive = true;
-
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, TestConstants.RUS_LOCALE);
         registrationInfo.setCardNumber("Один два три");
         PageElementUtils.fillPageElements(registrationInfo);
@@ -75,7 +70,6 @@ public class CreditCardFormTest {
     @DisplayName("Payment by credit card using latin alphabet in card number")
     public void testRequestFormEnCardNumber() {
         boolean isActive = true;
-
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
         registrationInfo.setCardNumber("One two three");
         PageElementUtils.fillPageElements(registrationInfo);
@@ -86,7 +80,6 @@ public class CreditCardFormTest {
     @DisplayName("Payment by credit card using special characters") //БАГ!!!!!!!!!!!
     public void testRequestFormSpecialCharacters() {
         boolean isActive = true;
-
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
         PageElementUtils.fillPageElements(registrationInfo);
         registrationInfo.setOwner("...,,,,,№№№№");
@@ -110,7 +103,6 @@ public class CreditCardFormTest {
     @DisplayName("Payment by credit card with declined card") // БАГ!!!!!!!!!!
     public void testDeclinedCard() {
         boolean isActive = false;
-
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, TestConstants.RUS_LOCALE);
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.bankOperationReject.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
@@ -121,7 +113,6 @@ public class CreditCardFormTest {
     public void testExpiredCard() {
         boolean isActive = true;
         boolean isExpired = true;
-
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, isExpired);
         PageElementUtils.fillPageElements(registrationInfo);
         PageElements.expiredField.shouldBe(visible, Duration.ofSeconds(notificationTimeout));
@@ -130,7 +121,6 @@ public class CreditCardFormTest {
     @DisplayName("Using 000 in CVC") // БАГ!!!!!!!!!!!
     public void testUse000inCVC(){
         boolean isActive = true;
-
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
         registrationInfo.setCode("000");
         PageElementUtils.fillPageElements(registrationInfo);
@@ -141,7 +131,6 @@ public class CreditCardFormTest {
     @DisplayName("Using one letter in owner") // БАГ!!!!!!!!!!
     public void testUseOneLetterInOwner(){
         boolean isActive = true;
-
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive,TestConstants.RUS_LOCALE);
         String newOwner = registrationInfo.getOwner();
         char wrongOwner = newOwner.charAt(0);
@@ -155,7 +144,6 @@ public class CreditCardFormTest {
     @DisplayName("Successfully order in order_entity")
     public void testRequestFormOrderEntity() {
         boolean isActive = true;
-
         SqlHelper.cleanDataBase();
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, TestConstants.RUS_LOCALE);
         PageElementUtils.fillPageElements(registrationInfo);
@@ -170,7 +158,6 @@ public class CreditCardFormTest {
     public void testUsingExpiredPeriodCard() {
         boolean isActive = true;
         boolean isExpired = true;
-
         SqlHelper.cleanDataBase();
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive, isExpired);
         PageElementUtils.fillPageElements(registrationInfo);
@@ -185,7 +172,6 @@ public class CreditCardFormTest {
     @DisplayName("Payment method definition")
     public void testPaymentMethodDefinition() {
         boolean isActive = true;
-
         SqlHelper.cleanDataBase();
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
         PageElementUtils.fillPageElements(registrationInfo);
@@ -201,7 +187,6 @@ public class CreditCardFormTest {
     @DisplayName("Approved status definition")
     public void testApprovedStatusDefinition(){
         boolean isActive = true;
-
         SqlHelper.cleanDataBase();
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
         PageElementUtils.fillPageElements(registrationInfo);
@@ -215,7 +200,6 @@ public class CreditCardFormTest {
     @DisplayName("Declined status definition")
     public void testDeclinedStatusDefinition(){
         boolean isActive = false;
-
         SqlHelper.cleanDataBase();
         RegistrationInfo registrationInfo = RegistrationDataGenerator.getRegistrationInfo(isActive);
         PageElementUtils.fillPageElements(registrationInfo);
